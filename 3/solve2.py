@@ -12,8 +12,8 @@ for i in range(len(text)):
     if text[i:i+4] == 'do()': do=True
     if text[i:i+7] == 'don\'t()': do=False
 
-for x in re.findall(r'mul\((\d+),(\d+)\)',cleaned):
-    sum+=int(x[0])*int(x[1])
+for factors in re.findall(r'mul\((\d+),(\d+)\)',cleaned):
+    sum+=int(factors[0])*int(factors[1])
 
 print(sum) # 92626942
         
