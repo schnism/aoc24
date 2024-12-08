@@ -1,53 +1,94 @@
 
-maze = open('6/input.txt').readlines()
-for i in range(len(maze)): 
-    maze[i]=list(maze[i].strip())
-    if maze[i].count('^')>0: 
-        row=i
-        col=maze[i].index('^')
+import copy 
+import sys
 
+smaze = open('6/input.txt').readlines()
+for i in range(len(smaze)): 
+    smaze[i]=list(smaze[i].strip())
+    if smaze[i].count('^')>0: 
+        srow=i
+        scol=smaze[i].index('^')
 
-dir=0
 
 def ahead():
     try:    
-        if dir==0: return maze[row-1][col]
+        if dir==0 and row>0: return maze[row-1][col]
         if dir==90: return maze[row][col+1]
         if dir==180: return maze[row+1][col]
-        if dir==270: return maze[row][col-1]
+        if dir==270 and col>0: return maze[row][col-1]
     except IndexError: return 'Exit'
+    return 'Exit'
 
 def move():
     global maze
     global row
     global col
-    maze[row][col]='X'
-    if dir==0: row-=1
-    if dir==90: col+=1
-    if dir==180: row+=1
-    if dir==270: col-=1
+    if dir==0:
+        maze[row][col]='^'
+        row-=1
+    if dir==90:
+        maze[row][col]='>'
+        col+=1
+    if dir==180:
+        maze[row][col]='v'
+        row+=1
+    if dir==270:
+        maze[row][col]='<'
+        col-=1
 
 
 
-
-while col<len(maze[0]) and col>=0 and row<len(maze) and row>=0:
-
-    if ahead()=='#':
-        dir=(dir+90)%360
-    else:
-        move()
-        
-    # for line in maze: print(''.join(line))
-    # print("===========================")
+count_loops=0
 
 
+for orow in range(len(smaze)):
+    for ocol in range(len(smaze[orow])):
 
-sum=0
+        print(orow,ocol)
 
-for line in maze:
-    for char in line:
-        if char=='X': sum+=1
+        dir=0
+        row=srow
+        col=scol
+        loop = False
+        maze=copy.deepcopy(smaze)
+        if not(ocol==scol and orow==srow): maze[orow][ocol]='#'
 
 
-for line in maze: print(''.join(line))
-print(sum)
+        steps=0
+
+
+        while col<len(maze[0]) and col>=0 and row<len(maze) and row>=0 and not(loop):
+
+            steps+=1
+
+               
+
+            if steps>50000: 
+                loop=True;
+                count_loops+=1
+                #print(dir,ahead(),row,col)
+                #for line in maze: print(''.join(line))
+                #sys.exit()
+
+            if ahead()=='#':
+                dir=(dir+90)%360
+            else:
+                move()
+
+            if ((
+                (dir==0 or dir==180) 
+                and 
+                (ahead()=='^' or ahead()=='v')
+                )
+                or
+                (
+                    (dir==90 or dir==270) 
+                    and 
+                    (ahead()=='<' or ahead()=='>')
+                )):
+                loop=True
+                count_loops+=1
+                #print("Loop!",orow,ocol,row,col,ahead(),dir)
+                #for line in maze: print(''.join(line))
+
+print(count_loops)
