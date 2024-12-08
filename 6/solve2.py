@@ -75,17 +75,7 @@ for orow in range(len(smaze)):
             else:
                 move()
 
-            if ((
-                (dir==0 or dir==180) 
-                and 
-                (ahead()=='^' or ahead()=='v')
-                )
-                or
-                (
-                    (dir==90 or dir==270) 
-                    and 
-                    (ahead()=='<' or ahead()=='>')
-                )):
+            if (dir==0 and ahead=='^') or (dir==90 and ahead=='>') or (dir==180 and ahead=='v') or (dir==270 and ahead=='<'):
                 loop=True
                 count_loops+=1
                 #print("Loop!",orow,ocol,row,col,ahead(),dir)
